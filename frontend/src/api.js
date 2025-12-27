@@ -58,9 +58,10 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 /**
- * Lista todas as pessoas com paginação
+ * Lista todas as pessoas com paginação e filtros opcionais
  * 
  * @param {string} url - URL completa para paginação (opcional)
+ * @param {object} filters - Filtros opcionais { created_after, created_before, modified_after, modified_before }
  * @returns {Promise} - Promise com lista paginada de pessoas
  * 
  * Resposta esperada:
@@ -71,7 +72,7 @@ async function apiRequest(endpoint, options = {}) {
  *   results: Person[]
  * }
  */
-export async function listPersons(url = null) {
+export async function listPersons(url = null, filters = {}) {
   // se uma URL completa for passada (para paginação), usa ela diretamente
   if (url) {
     const response = await fetch(url);
@@ -81,7 +82,26 @@ export async function listPersons(url = null) {
     return response.json();
   }
   
-  return apiRequest('/persons/');
+  // Constrói query string com filtros
+  const params = new URLSearchParams();
+  
+  if (filters.created_after) {
+    params.append('created_date__gte', filters.created_after);
+  }
+  if (filters.created_before) {
+    params.append('created_date__lte', filters.created_before);
+  }
+  if (filters.modified_after) {
+    params.append('modified_date__gte', filters.modified_after);
+  }
+  if (filters.modified_before) {
+    params.append('modified_date__lte', filters.modified_before);
+  }
+  
+  const queryString = params.toString();
+  const endpoint = queryString ? `/persons/?${queryString}` : '/persons/';
+  
+  return apiRequest(endpoint);
 }
 
 /**
@@ -163,6 +183,19 @@ export async function getTaskStatus(taskId) {
   return apiRequest(`/long-task/${taskId}/`);
 }
 
+/**
+ * Inicia uma tarefa assíncrona para calcular estatísticas (média e desvio padrão)
+ * 
+ * @param {number[]} values - Lista de valores numéricos
+ * @returns {Promise} - Promise com { task_id, status: "accepted", values_count }
+ */
+export async function startStatisticsTask(values) {
+  return apiRequest('/statistics/', {
+    method: 'POST',
+    body: JSON.stringify({ values }),
+  });
+}
+
 export default {
   listPersons,
   getPerson,
@@ -171,4 +204,5 @@ export default {
   deletePerson,
   startLongTask,
   getTaskStatus,
+  startStatisticsTask,
 };
