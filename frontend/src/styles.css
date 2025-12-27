@@ -1,0 +1,184 @@
+/**
+ * styles.css - Estilos customizados para a aplicação
+ * 
+ * Complementa o Bootstrap com estilos específicos do projeto.
+ * Organizado por seções para facilitar manutenção.
+ */
+
+ body {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+}
+
+h3 {
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+h5 {
+  color: #555;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.person-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.person-form .form-control {
+  border-radius: 6px;
+}
+
+.person-form .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.person-list {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.person-item {
+  transition: background-color 0.2s ease;
+}
+
+.person-item:hover {
+  background-color: #f8f9fa;
+}
+
+.person-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.person-hobbies {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.btn-action-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action-group .btn {
+  min-width: 70px;
+}
+
+.pagination-controls {
+  margin-top: 20px;
+  padding: 15px 0;
+}
+
+.pagination-controls .btn {
+  min-width: 100px;
+}
+
+.long-task-panel {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+.task-status {
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+
+.task-status.pending {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+}
+
+.task-status.started {
+  background-color: #cce5ff;
+  border: 1px solid #007bff;
+}
+
+.task-status.success {
+  background-color: #d4edda;
+  border: 1px solid #28a745;
+}
+
+.task-status.failure {
+  background-color: #f8d7da;
+  border: 1px solid #dc3545;
+}
+
+.task-id {
+  font-family: monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+  background-color: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 20px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.editing-mode {
+  background-color: #fff3cd !important;
+}
+
+.edit-form {
+  background-color: #fffbe6;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #ffc107;
+}
+
+@media (max-width: 576px) {
+  .btn-action-group {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .btn-action-group .btn {
+    min-width: auto;
+  }
+  
+  .pagination-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .pagination-controls .btn {
+    width: 100%;
+  }
+}

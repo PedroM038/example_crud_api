@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Build containers
 docker compose build
 
