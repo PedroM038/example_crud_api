@@ -9,10 +9,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Importa funções da API
 import { listPersons, createPerson, updatePerson, deletePerson } from './api';
 
-// Importa componentes (serão criados na fase 2)
+// Importa componentes
 import PersonForm from './components/PersonForm';
 import PersonList from './components/PersonList';
+import DateFilter from './components/DateFilter';
 import LongTaskPanel from './components/LongTaskPanel';
+import StatisticsPanel from './components/StatisticsPanel';
 
 function App() {
   
@@ -33,17 +35,21 @@ function App() {
   
   // Estado para mensagem de sucesso
   const [successMessage, setSuccessMessage] = useState(null);
+  
+  // Estado para filtros ativos
+  const [activeFilters, setActiveFilters] = useState({});
 
   /**
    * Carrega a lista de pessoas da API
    * @param {string} url - URL para paginação (opcional)
+   * @param {object} filters - Filtros de data (opcional)
    */
-  const loadPersons = useCallback(async (url = null) => {
+  const loadPersons = useCallback(async (url = null, filters = {}) => {
     setLoading(true);
     setError(null);
     
     try {
-      const data = await listPersons(url);
+      const data = await listPersons(url, filters);
       setPersons(data.results);
       setPagination({
         count: data.count,
@@ -140,6 +146,21 @@ function App() {
     setEditingPerson(null);
   };
 
+  /**
+   * Handler para aplicar filtros de data
+   */
+  const handleFilter = (filters) => {
+    setActiveFilters(filters);
+    loadPersons(null, filters);
+  };
+
+  /**
+   * Handler para limpar filtros
+   */
+  const handleClearFilter = () => {
+    setActiveFilters({});
+    loadPersons();
+  };
 
   /**
    * Navega para a próxima página
@@ -201,6 +222,13 @@ function App() {
         onCancel={handleCancelEdit}
       />
 
+      {/* Filtros por data */}
+      <DateFilter
+        onFilter={handleFilter}
+        onClear={handleClearFilter}
+        loading={loading}
+      />
+
       {/* Lista de pessoas */}
       <PersonList
         persons={persons}
@@ -221,6 +249,7 @@ function App() {
         </button>
         <span className="align-self-center text-muted">
           {pagination.count} pessoa(s) encontrada(s)
+          {Object.keys(activeFilters).length > 0 && ' (filtrado)'}
         </span>
         <button
           className="btn btn-secondary"
@@ -231,8 +260,16 @@ function App() {
         </button>
       </div>
 
+      <hr className="my-4" />
+
+      {/* Seção de funcionalidades extras */}
+      <h4 className="mb-3">Funcionalidades Extras</h4>
+      
       {/* Painel de tarefas assíncronas */}
       <LongTaskPanel />
+      
+      {/* Painel de estatísticas */}
+      <StatisticsPanel />
     </div>
   );
 }
