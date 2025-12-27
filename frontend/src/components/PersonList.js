@@ -81,7 +81,7 @@ function PersonList({ persons, loading, onEdit, onDelete, editingPersonId }) {
 
             <div className="btn-action-group">
               <button
-                className="btn btn-sm btn-outline-secondary"
+                className="btn btn-sm btn-outline-secondary me-2"
                 onClick={() => onEdit(person)}
                 disabled={deletingId === person.id}
               >

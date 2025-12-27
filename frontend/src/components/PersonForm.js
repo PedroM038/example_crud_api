@@ -4,7 +4,7 @@
  * Componente controlado que gerencia os campos do formulário.
  * Suporta modo de criação e edição.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 /**
  * @param {function} onSubmit - Função chamada ao submeter o formulário
@@ -13,6 +13,9 @@ import React, { useState, useEffect } from 'react';
  * @param {function} onCancel - Função chamada ao cancelar edição
  */
 function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
+  // referência para o formulário (scroll automático)
+  const formRef = useRef(null);
+  
   // estado do formulário
   const [personName, setPersonName] = useState('');
   const [hobbies, setHobbies] = useState('');
@@ -29,6 +32,8 @@ function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
           ? initialData.hobbies.join(', ') 
           : ''
       );
+      // scroll suave até o formulário quando entrar em modo edição
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       // limpa o formulário quando sai do modo edição
       setPersonName('');
@@ -80,7 +85,7 @@ function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
   };
 
   return (
-    <div className={`person-form ${isEditing ? 'edit-form' : ''}`}>
+    <div ref={formRef} className={`person-form ${isEditing ? 'edit-form' : ''}`}>
       <h5>{isEditing ? 'Edit Person' : 'Create Person'}</h5>
       
       <form onSubmit={handleSubmit}>

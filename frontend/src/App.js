@@ -15,9 +15,6 @@ import PersonList from './components/PersonList';
 import LongTaskPanel from './components/LongTaskPanel';
 
 function App() {
-  // ================================
-  // Estados da aplicação
-  // ================================
   
   // Lista de pessoas e dados de paginação
   const [persons, setPersons] = useState([]);
@@ -33,10 +30,9 @@ function App() {
   
   // Estado para edição de pessoa
   const [editingPerson, setEditingPerson] = useState(null);
-
-  // ================================
-  // Funções de carregamento de dados
-  // ================================
+  
+  // Estado para mensagem de sucesso
+  const [successMessage, setSuccessMessage] = useState(null);
 
   /**
    * Carrega a lista de pessoas da API
@@ -67,19 +63,25 @@ function App() {
     loadPersons();
   }, [loadPersons]);
 
-  // ================================
-  // Handlers de CRUD
-  // ================================
 
   /**
    * Handler para criar uma nova pessoa
    * @param {object} personData - Dados da pessoa { person_name, hobbies }
    */
+  /**
+   * Exibe mensagem de sucesso temporária
+   */
+  const showSuccess = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(null), 3000);
+  };
+
   const handleCreatePerson = async (personData) => {
     try {
       await createPerson(personData);
       // Recarrega a lista para mostrar a nova pessoa
       await loadPersons();
+      showSuccess(`Pessoa "${personData.person_name}" criada com sucesso!`);
       return { success: true };
     } catch (err) {
       console.error('Erro ao criar pessoa:', err);
@@ -98,6 +100,7 @@ function App() {
       // Limpa o estado de edição e recarrega a lista
       setEditingPerson(null);
       await loadPersons();
+      showSuccess(`Pessoa "${personData.person_name}" atualizada com sucesso!`);
       return { success: true };
     } catch (err) {
       console.error('Erro ao atualizar pessoa:', err);
@@ -114,6 +117,7 @@ function App() {
       await deletePerson(id);
       // Recarrega a lista após deletar
       await loadPersons();
+      showSuccess('Pessoa removida com sucesso!');
       return { success: true };
     } catch (err) {
       console.error('Erro ao deletar pessoa:', err);
@@ -136,9 +140,6 @@ function App() {
     setEditingPerson(null);
   };
 
-  // ================================
-  // Handlers de paginação
-  // ================================
 
   /**
    * Navega para a próxima página
@@ -158,13 +159,23 @@ function App() {
     }
   };
 
-  // ================================
-  // Renderização
-  // ================================
 
   return (
     <div className="container mt-4">
       <h3>Person CRUD Demo</h3>
+
+      {/* Mensagem de sucesso */}
+      {successMessage && (
+        <div className="alert alert-success alert-dismissible fade show" role="alert">
+          {successMessage}
+          <button 
+            type="button" 
+            className="btn-close" 
+            onClick={() => setSuccessMessage(null)}
+            aria-label="Close"
+          />
+        </div>
+      )}
 
       {/* Mensagem de erro global */}
       {error && (
