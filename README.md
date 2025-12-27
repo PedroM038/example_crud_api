@@ -1,53 +1,92 @@
-# Project *example_crud_api*
-A minimal docker ready django api that implements simple crud with long wait async tasks, connects with postgreSQL and Celery+Redis
+# Example CRUD API
 
-# Project structure
-<pre><code>
-backend/
-├── app/
-│ ├── __init__.py
-│ ├── admin.py
-│ ├── apps.py
-│ ├── migrations/
-│ │ └── __init__.py
-│ ├── models.py
-│ ├── serializers.py
-│ ├── views.py
-│ ├── urls.py
-│ └── tests.py
-├── config/
-│ ├── __init__.py
-│ ├── asgi.py
-│ ├── settings.py
-│ ├── urls.py
-│ └── wsgi.py
-├── .env
-├── manage.py
-├── requirements.txt
-├── Dockerfile
-└── docker-compose.yml
-</code></pre>
-  
-# To build the containers and setup the persistent data to the db
-```bash
-backend/setup.sh
+Full-stack application with Django REST Framework backend and React frontend.
+
+## Tech Stack
+
+**Backend:** Python, Django 4.2, Django REST Framework, PostgreSQL, Celery, Redis
+
+**Frontend:** React 18, Bootstrap 5
+
+## Project Structure
+
+```
+example_crud_api/
+├── backend/
+│   ├── app/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   └── tasks.py
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── celery.py
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── setup.sh
+├── frontend/
+│   ├── src/
+│   │   ├── api.js
+│   │   ├── App.js
+│   │   └── components/
+│   │       ├── DateFilter.js
+│   │       ├── LongTaskPanel.js
+│   │       ├── PersonForm.js
+│   │       ├── PersonList.js
+│   │       └── StatisticsPanel.js
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   └── package.json
+└── documentation/
 ```
 
-**Obs.:** Change backend/docker-compose.yml to handle the proper TCP ports if necessary. Change any .env to match your setup.
+## Quick Start
 
-# The end points are created with the API
-<pre><code>
-http://0.0.0.0:8001/admin/
-http://0.0.0.0:8001/api/docs/
-</code></pre>
+### Backend
 
-# The mock html can be used as reference
 ```bash
-frontend/public/static-mock.html
+cd backend
+chmod +x setup.sh
+./setup.sh
 ```
 
-# Final frontend should look like this
-documentation/example.mp4
+### Frontend
 
+```bash
+cd frontend
+npm install
+npm start
+```
 
-https://github.com/user-attachments/assets/b39004bd-82d3-43ab-9934-f7585a548e71
+## API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `/api/persons/` | Person CRUD |
+| `/api/long-task/` | Start async task |
+| `/api/long-task/{id}/` | Check task status |
+| `/api/statistics/` | Calculate statistics |
+| `/api/docs/` | Swagger documentation |
+| `/admin/` | Django admin |
+
+## Features
+
+- Person CRUD with pagination
+- Date filtering (created/modified)
+- Long-running async tasks with Celery
+- Statistics calculation (mean, std deviation)
+- Task status polling
+
+## Configuration
+
+Update `.env` files in backend and frontend directories to match your setup.
+
+Default ports:
+- Backend: `8001`
+- Frontend: `3000`
+- PostgreSQL: `5432`
+- Redis: `6379`
+

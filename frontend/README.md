@@ -1,47 +1,61 @@
-# example_crud_api
-A minimal docker ready react frontend that matches the django api
+# Frontend
 
-# Project structure
-<pre><code>
+React application for the Person CRUD API.
+
+## Tech Stack
+
+- React 18
+- Bootstrap 5
+- Fetch API
+
+## Setup
+
+```bash
+npm install
+npm start
+```
+
+## Docker
+
+```bash
+docker compose up --build
+```
+
+## Environment Variables
+
+Create a `.env` file:
+
+```
+REACT_APP_API_BASE_URL=http://localhost:8001/api
+```
+
+## Project Structure
+
+```
 frontend/
 ├── public/
-│   ├── index.html
-│   └── static-mock.html
+│   └── index.html
 ├── src/
-│   ├── api.js
-│   ├── App.js
-│   ├── components/
-│   │   ├── PersonForm.js
-│   │   ├── PersonList.js
-│   │   └── LongTaskPanel.js
-│   ├── index.js
-│   └── styles.css
+│   ├── api.js              # API communication module
+│   ├── App.js              # Main component
+│   ├── index.js            # Entry point
+│   ├── styles.css          # Global styles
+│   └── components/
+│       ├── DateFilter.js       # Date filter component
+│       ├── LongTaskPanel.js    # Async task panel
+│       ├── PersonForm.js       # Create/edit form
+│       ├── PersonList.js       # Person list display
+│       └── StatisticsPanel.js  # Statistics calculator
 ├── .env
 ├── package.json
 ├── Dockerfile
 └── docker-compose.yml
-</code></pre>
+```
 
-# The mock html can be used as reference
-frontend/public/static-mock.html
+## Features
 
-# There are critical missing files that need to be implemented as the exercise
-<pre><code>
-frontend/
-├── public/
-│   ├── index.html
-│   └── static-mock.html
-├── src/ (TODO)
-│   ├── api.js (TODO)
-│   ├── App.js (TODO)
-│   ├── components/ (TODO)
-│   │   ├── PersonForm.js (TODO)
-│   │   ├── PersonList.js (TODO)
-│   │   └── LongTaskPanel.js (TODO)
-│   ├── index.js (TODO)
-│   └── styles.css (TODO)
-├── .env
-├── package.json
-├── Dockerfile
-└── docker-compose.yml
-</code></pre>
+- Person CRUD operations
+- Date filtering (created/modified)
+- Pagination
+- Async task monitoring
+- Statistics calculation (mean, std deviation)

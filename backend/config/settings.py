@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "corsheaders",
+    "django_filters",
 
     # Local apps
     "app",
@@ -43,6 +44,12 @@ REST_FRAMEWORK = {
     # Enable pagination for list endpoints
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
+    
+    # Enable filtering
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+    ],
 }
 ################end PAGINATION ADDON
 
