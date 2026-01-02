@@ -1,7 +1,7 @@
 /**
- * api.js - Backend API communication module
+ * @file api.js - Backend API communication module
  * 
- * Centralizes all HTTP calls to the Django REST Framework API.
+ * @description Centralizes all HTTP calls to the Django REST Framework API.
  * Facilitates maintenance and reuse of CRUD operations.
  */
 

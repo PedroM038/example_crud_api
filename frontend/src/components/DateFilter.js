@@ -1,9 +1,10 @@
 /**
- * DateFilter.js - Date filter component
+ * @file DateFilter.js - date filter component
  * 
- * Allows filtering persons by creation or modification date.
+ * @description allows filtering persons by creation or modification date.
  * Supports "from" and "to" filters for both fields.
  */
+
 import React, { useState } from 'react';
 
 /**
@@ -12,14 +13,12 @@ import React, { useState } from 'react';
  * @param {boolean} loading - Loading state
  */
 function DateFilter({ onFilter, onClear, loading }) {
+
   const [filterType, setFilterType] = useState('created');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
 
-  /**
-   * Applies the selected filters.
-   */
   const handleApplyFilter = () => {
     const filters = {};
     
@@ -46,18 +45,12 @@ function DateFilter({ onFilter, onClear, loading }) {
     onFilter(filters);
   };
 
-  /**
-   * Clears all filters.
-   */
   const handleClearFilter = () => {
     setDateFrom('');
     setDateTo('');
     onClear();
   };
 
-  /**
-   * Checks if there are active filters.
-   */
   const hasActiveFilters = dateFrom || dateTo;
 
   return (

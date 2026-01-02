@@ -1,8 +1,8 @@
 /**
- * PersonForm.js - Form to create and edit persons
+ * @file PersonForm.js - form to create and edit persons
  * 
- * Controlled component that manages form fields.
- * Supports create and edit modes.
+ * controlled component that manages form fields.
+ * supports create and edit modes.
  */
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -35,9 +35,7 @@ function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
     }
   }, [initialData]);
 
-  /**
-   * Form submit handler.
-   */
+  //form submit handler.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);

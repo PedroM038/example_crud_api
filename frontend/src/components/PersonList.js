@@ -1,24 +1,22 @@
 /**
- * PersonList.js - Person list with edit and delete actions
+ * @file PersonList.js - person list with edit and delete actions
  * 
- * Displays persons in a Bootstrap list format.
- * Each item has edit and delete buttons.
+ * displays persons in a Bootstrap list format.
+ * each item has edit and delete buttons.
  */
 import React, { useState } from 'react';
 
 /**
- * @param {array} persons - List of persons to display
- * @param {boolean} loading - Loading state
- * @param {function} onEdit - Callback to edit person
- * @param {function} onDelete - Callback to delete person
- * @param {number} editingPersonId - ID of person being edited
+ * @param {array} persons - list of persons to display
+ * @param {boolean} loading - loading state
+ * @param {function} onEdit - callback to edit person
+ * @param {function} onDelete - callback to delete person
+ * @param {number} editingPersonId - id of person being edited
  */
 function PersonList({ persons, loading, onEdit, onDelete, editingPersonId }) {
   const [deletingId, setDeletingId] = useState(null);
 
-  /**
-   * Handler to delete person with confirmation.
-   */
+  //handler to delete person with confirmation.
   const handleDelete = async (person) => {
     if (!window.confirm(`Are you sure you want to delete "${person.person_name}"?`)) {
       return;

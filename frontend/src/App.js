@@ -1,7 +1,7 @@
 /**
- * App.js - Main application component
+ * @file App.js - Main application component
  * 
- * Manages global state and coordinates child components.
+ * @description Manages global state and coordinates child components.
  * Handles CRUD logic and API communication.
  */
 import React, { useState, useEffect, useCallback } from 'react';
@@ -61,10 +61,6 @@ function App() {
     loadPersons();
   }, [loadPersons]);
 
-
-  /**
-   * Displays a temporary success message.
-   */
   const showSuccess = (message) => {
     setSuccessMessage(message);
     setTimeout(() => setSuccessMessage(null), 3000);
@@ -128,47 +124,31 @@ function App() {
     setEditingPerson(person);
   };
 
-  /**
-   * Handler to cancel editing.
-   */
   const handleCancelEdit = () => {
     setEditingPerson(null);
   };
 
-  /**
-   * Handler to apply date filters.
-   */
   const handleFilter = (filters) => {
     setActiveFilters(filters);
     loadPersons(null, filters);
   };
 
-  /**
-   * Handler to clear filters.
-   */
   const handleClearFilter = () => {
     setActiveFilters({});
     loadPersons();
   };
 
-  /**
-   * Navigates to the next page.
-   */
   const handleNextPage = () => {
     if (pagination.next) {
       loadPersons(pagination.next);
     }
   };
 
-  /**
-   * Navigates to the previous page.
-   */
   const handlePreviousPage = () => {
     if (pagination.previous) {
       loadPersons(pagination.previous);
     }
   };
-
 
   return (
     <div className="container mt-4">
