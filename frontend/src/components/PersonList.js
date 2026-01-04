@@ -5,6 +5,16 @@
  * each item has edit and delete buttons.
  */
 import React, { useState } from 'react';
+import ConfirmModal from './ConfirmModal';
+
+const ORDERING_OPTIONS = [
+  { value: '-created_date', label: 'Newest First' },
+  { value: 'created_date', label: 'Oldest First' },
+  { value: 'person_name', label: 'Name (A-Z)' },
+  { value: '-person_name', label: 'Name (Z-A)' },
+  { value: '-modified_date', label: 'Recently Modified' },
+  { value: 'modified_date', label: 'Least Recently Modified' },
+];
 
 /**
  * @param {array} persons - list of persons to display
@@ -13,21 +23,48 @@ import React, { useState } from 'react';
  * @param {function} onDelete - callback to delete person
  * @param {number} editingPersonId - id of person being edited
  */
-function PersonList({ persons, loading, onEdit, onDelete, editingPersonId }) {
+function PersonList({ persons, loading, onEdit, onDelete, editingPersonId, ordering = '-created_date', onOrderingChange }) {
   const [deletingId, setDeletingId] = useState(null);
+  const [personToDelete, setPersonToDelete] = useState(null);
 
-  //handler to delete person with confirmation.
-  const handleDelete = async (person) => {
-    if (!window.confirm(`Are you sure you want to delete "${person.person_name}"?`)) {
-      return;
-    }
+  const OrderingSelector = () => (
+    <div className="d-flex align-items-center gap-2">
+      <label htmlFor="ordering" className="text-muted small mb-0">Sort by:</label>
+      <select
+        id="ordering"
+        className="form-select form-select-sm"
+        style={{ width: 'auto' }}
+        value={ordering}
+        onChange={(e) => onOrderingChange(e.target.value)}
+        disabled={loading}
+      >
+        {ORDERING_OPTIONS.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 
-    setDeletingId(person.id);
+  const handleDeleteClick = (person) => {
+    setPersonToDelete(person);
+  };
+
+  const handleCancelDelete = () => {
+    setPersonToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!personToDelete) return;
+
+    setDeletingId(personToDelete.id);
     
     try {
-      await onDelete(person.id);
+      await onDelete(personToDelete.id);
     } finally {
       setDeletingId(null);
+      setPersonToDelete(null);
     }
   };
 
@@ -52,7 +89,10 @@ function PersonList({ persons, loading, onEdit, onDelete, editingPersonId }) {
 
   return (
     <div className="person-list">
-      <h5>Persons</h5>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h5 className="mb-0">Persons</h5>
+        <OrderingSelector />
+      </div>
       
       <ul className="list-group mb-3">
         {persons.map((person) => (
@@ -82,7 +122,7 @@ function PersonList({ persons, loading, onEdit, onDelete, editingPersonId }) {
               </button>
               <button
                 className="btn btn-sm btn-outline-danger"
-                onClick={() => handleDelete(person)}
+                onClick={() => handleDeleteClick(person)}
                 disabled={deletingId === person.id}
               >
                 {deletingId === person.id ? 'Deleting...' : 'Delete'}
@@ -91,6 +131,18 @@ function PersonList({ persons, loading, onEdit, onDelete, editingPersonId }) {
           </li>
         ))}
       </ul>
+
+      <ConfirmModal
+        isOpen={personToDelete !== null}
+        title="Delete Person"
+        message={`Are you sure you want to delete "${personToDelete?.person_name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        loading={deletingId !== null}
+      />
     </div>
   );
 }

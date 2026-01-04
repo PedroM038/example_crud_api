@@ -26,6 +26,7 @@ class PersonViewSet(viewsets.ModelViewSet):
     - DELETE /api/persons/{id}/ -> 204 No Content
     
   Filtering:
+    - GET /api/persons/?search=john (search by name)
     - GET /api/persons/?created_date_after=2024-01-01
     - GET /api/persons/?created_date_before=2024-12-31
     - GET /api/persons/?modified_date_after=2024-01-01
@@ -33,11 +34,12 @@ class PersonViewSet(viewsets.ModelViewSet):
   """
   queryset = Person.objects.all().order_by("-created_date")
   serializer_class = PersonSerializer
-  filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+  filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
   filterset_fields = {
     'created_date': ['gte', 'lte', 'exact'],
     'modified_date': ['gte', 'lte', 'exact'],
   }
+  search_fields = ['person_name']
   ordering_fields = ['created_date', 'modified_date', 'person_name']
 
 

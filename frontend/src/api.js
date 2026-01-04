@@ -57,10 +57,12 @@ async function apiRequest(endpoint, options = {}) {
  * Lists all persons with pagination and optional filters.
  * 
  * @param {string} url - Full URL for pagination (optional)
- * @param {object} filters - Optional filters { created_after, created_before, modified_after, modified_before }
+ * @param {object} filters - Optional filters { search, created_after, created_before, modified_after, modified_before }
+ * @param {number} pageSize - Number of items per page (optional)
+ * @param {string} ordering - Field to order by (optional), prefix with '-' for descending
  * @returns {Promise} - Promise with paginated list of persons
  */
-export async function listPersons(url = null, filters = {}) {
+export async function listPersons(url = null, filters = {}, pageSize = null, ordering = null) {
   if (url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -71,6 +73,22 @@ export async function listPersons(url = null, filters = {}) {
   
   const params = new URLSearchParams();
   
+  // Pagination
+  if (pageSize) {
+    params.append('limit', pageSize);
+  }
+  
+  // Ordering
+  if (ordering) {
+    params.append('ordering', ordering);
+  }
+  
+  // Search by name
+  if (filters.search) {
+    params.append('search', filters.search);
+  }
+  
+  // Date filters
   if (filters.created_after) {
     params.append('created_date__gte', filters.created_after);
   }
