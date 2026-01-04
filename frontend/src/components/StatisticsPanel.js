@@ -1,7 +1,7 @@
 /**
- * StatisticsPanel.js - Statistics calculation panel
+ * @file StatisticsPanel.js - statistics calculation panel
  * 
- * Allows calculating mean and standard deviation from numeric values
+ * @description allows calculating mean and standard deviation from numeric values
  * using async processing via Celery.
  */
 import React, { useState, useEffect, useRef } from 'react';
@@ -19,9 +19,7 @@ function StatisticsPanel() {
 
   const pollingRef = useRef(null);
 
-  /**
-   * Validates and converts input string to number array.
-   */
+  // validates and converts input string to number array.
   const parseValues = (input) => {
     if (!input.trim()) return [];
     
@@ -38,9 +36,6 @@ function StatisticsPanel() {
     return values;
   };
 
-  /**
-   * Starts statistics calculation.
-   */
   const handleCalculate = async () => {
     setError(null);
     setTaskResult(null);
@@ -72,9 +67,6 @@ function StatisticsPanel() {
     }
   };
 
-  /**
-   * Starts polling to check task status.
-   */
   const startPolling = (id) => {
     if (pollingRef.current) {
       clearInterval(pollingRef.current);
@@ -104,10 +96,8 @@ function StatisticsPanel() {
       }
     };
   }, []);
-
-  /**
-   * Clears results and resets the form.
-   */
+  
+  // clears results and resets the form.
   const handleClear = () => {
     setInputValues('');
     setTaskId(null);
@@ -116,9 +106,7 @@ function StatisticsPanel() {
     setError(null);
   };
 
-  /**
-   * Returns CSS class based on task state.
-   */
+  // returns CSS class based on task state.
   const getStatusClass = () => {
     switch (taskState) {
       case 'PENDING':

@@ -4,9 +4,5 @@ from celery import Celery
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 celery_app = Celery("config")
-
-# Load settings from Django settings, using CELERY_ prefix
 celery_app.config_from_object("django.conf:settings", namespace="CELERY")
-
-# Auto-discover tasks from installed apps
 celery_app.autodiscover_tasks()

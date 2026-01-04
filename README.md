@@ -8,6 +8,56 @@ Full-stack application with Django REST Framework backend and React frontend.
 
 **Frontend:** React 18, Bootstrap 5
 
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Frontend
+        React[React App]
+    end
+    
+    subgraph Backend
+        Django[Django API]
+        Celery[Celery Worker]
+    end
+    
+    subgraph Data
+        PostgreSQL[(PostgreSQL)]
+        Redis[(Redis)]
+    end
+    
+    React -->|HTTP| Django
+    Django -->|ORM| PostgreSQL
+    Django -->|Queue Task| Redis
+    Redis -->|Consume| Celery
+    Celery -->|Store Result| Redis
+    Celery -->|Read/Write| PostgreSQL
+```
+
+### Async Task Flow
+
+```mermaid
+sequenceDiagram
+    participant F as Frontend
+    participant A as Django API
+    participant R as Redis
+    participant C as Celery Worker
+
+    F->>A: POST /api/statistics/
+    A->>R: task.delay()
+    A-->>F: 202 {task_id}
+    
+    C->>R: Get task
+    C->>C: Process
+    C->>R: Store result
+    
+    loop Polling
+        F->>A: GET /api/tasks/{id}/status/
+        A->>R: Get result
+        A-->>F: {state, result}
+    end
+```
+
 ## Project Structure
 
 ```
@@ -36,7 +86,9 @@ example_crud_api/
 │   │       ├── LongTaskPanel.js
 │   │       ├── PersonForm.js
 │   │       ├── PersonList.js
-│   │       └── StatisticsPanel.js
+│   │       |── StatisticsPanel.js
+│   │       |── ConfirmModal.js
+│   │       └── SearchFilters.js
 │   ├── docker-compose.yml
 │   ├── Dockerfile
 │   └── package.json
@@ -88,5 +140,5 @@ Default ports:
 - Backend: `8001`
 - Frontend: `3000`
 - PostgreSQL: `5432`
-- Redis: `6379`
+- Redis: `6380`
 

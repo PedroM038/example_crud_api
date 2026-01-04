@@ -4,9 +4,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from celery.result import AsyncResult
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiExample
 
 from .models import Person
-from .serializers import PersonSerializer
+from .serializers import (
+    PersonSerializer,
+    StatisticsRequestSerializer,
+    StatisticsResponseSerializer,
+)
 from .tasks import long_running_task, calculate_statistics_task
 
 
@@ -21,6 +26,7 @@ class PersonViewSet(viewsets.ModelViewSet):
     - DELETE /api/persons/{id}/ -> 204 No Content
     
   Filtering:
+    - GET /api/persons/?search=john (search by name)
     - GET /api/persons/?created_date_after=2024-01-01
     - GET /api/persons/?created_date_before=2024-12-31
     - GET /api/persons/?modified_date_after=2024-01-01
@@ -28,11 +34,12 @@ class PersonViewSet(viewsets.ModelViewSet):
   """
   queryset = Person.objects.all().order_by("-created_date")
   serializer_class = PersonSerializer
-  filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+  filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
   filterset_fields = {
     'created_date': ['gte', 'lte', 'exact'],
     'modified_date': ['gte', 'lte', 'exact'],
   }
+  search_fields = ['person_name']
   ordering_fields = ['created_date', 'modified_date', 'person_name']
 
 
@@ -118,14 +125,20 @@ class LongTaskStatusView(APIView):
 class StatisticsTaskView(APIView):
   """
   Starts an async task to calculate mean and standard deviation.
-  
-  POST /api/statistics/
-  Body: { "values": [1, 2, 3, 4, 5] }
-  
-  Returns:
-    { "task_id": "uuid", "status": "accepted" }
   """
   
+  @extend_schema(
+    request=StatisticsRequestSerializer,
+    responses={202: StatisticsResponseSerializer},
+    description="Submit a list of numeric values to calculate mean and standard deviation asynchronously.",
+    examples=[
+      OpenApiExample(
+        name="Example request",
+        value={"values": [1, 2, 3, 4, 5]},
+        request_only=True,
+      )
+    ]
+  )
   def post(self, request):
     values = request.data.get('values', [])
     

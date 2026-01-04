@@ -1,8 +1,8 @@
 /**
- * PersonForm.js - Form to create and edit persons
+ * @file PersonForm.js - form to create and edit persons
  * 
- * Controlled component that manages form fields.
- * Supports create and edit modes.
+ * controlled component that manages form fields.
+ * supports create and edit modes.
  */
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -12,6 +12,8 @@ import React, { useState, useEffect, useRef } from 'react';
  * @param {boolean} isEditing - Indicates edit mode
  * @param {function} onCancel - Function called on cancel edit
  */
+const MAX_NAME_LENGTH = 255;
+
 function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
   const formRef = useRef(null);
   
@@ -35,15 +37,18 @@ function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
     }
   }, [initialData]);
 
-  /**
-   * Form submit handler.
-   */
+  //form submit handler.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
     if (!personName.trim()) {
       setError('Name is required');
+      return;
+    }
+
+    if (personName.trim().length > MAX_NAME_LENGTH) {
+      setError(`Name must be at most ${MAX_NAME_LENGTH} characters`);
       return;
     }
 
@@ -80,14 +85,20 @@ function PersonForm({ onSubmit, initialData, isEditing, onCancel }) {
       <h5>{isEditing ? 'Edit Person' : 'Create Person'}</h5>
       
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          className="form-control mb-2"
-          placeholder="Person name"
-          value={personName}
-          onChange={(e) => setPersonName(e.target.value)}
-          disabled={submitting}
-        />
+        <div className="mb-2">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Person name"
+            value={personName}
+            onChange={(e) => setPersonName(e.target.value)}
+            maxLength={MAX_NAME_LENGTH}
+            disabled={submitting}
+          />
+          <small className={`text-${personName.length > MAX_NAME_LENGTH - 20 ? 'warning' : 'muted'}`}>
+            {personName.length}/{MAX_NAME_LENGTH}
+          </small>
+        </div>
 
         <input
           type="text"

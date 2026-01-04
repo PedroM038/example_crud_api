@@ -41,11 +41,13 @@ frontend/
 │   ├── index.js            # Entry point
 │   ├── styles.css          # Global styles
 │   └── components/
-│       ├── DateFilter.js       # Date filter component
-│       ├── LongTaskPanel.js    # Async task panel
-│       ├── PersonForm.js       # Create/edit form
-│       ├── PersonList.js       # Person list display
-│       └── StatisticsPanel.js  # Statistics calculator
+│      ├── DateFilter.js
+│      ├── LongTaskPanel.js
+│      ├── PersonForm.js
+│      ├── PersonList.js
+│      |── StatisticsPanel.js
+│      |── ConfirmModal.js
+│      └── SearchFilters.js
 ├── .env
 ├── package.json
 ├── Dockerfile

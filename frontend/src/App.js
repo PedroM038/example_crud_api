@@ -1,7 +1,7 @@
 /**
- * App.js - Main application component
+ * @file App.js - Main application component
  * 
- * Manages global state and coordinates child components.
+ * @description Manages global state and coordinates child components.
  * Handles CRUD logic and API communication.
  */
 import React, { useState, useEffect, useCallback } from 'react';
@@ -10,7 +10,7 @@ import { listPersons, createPerson, updatePerson, deletePerson } from './api';
 
 import PersonForm from './components/PersonForm';
 import PersonList from './components/PersonList';
-import DateFilter from './components/DateFilter';
+import SearchFilters from './components/SearchFilters';
 import LongTaskPanel from './components/LongTaskPanel';
 import StatisticsPanel from './components/StatisticsPanel';
 
@@ -31,18 +31,24 @@ function App() {
   const [successMessage, setSuccessMessage] = useState(null);
   
   const [activeFilters, setActiveFilters] = useState({});
+  
+  const [pageSize, setPageSize] = useState(10);
+  
+  const [ordering, setOrdering] = useState('-created_date');
 
   /**
    * Loads the list of persons from the API.
    * @param {string} url - URL for pagination (optional)
    * @param {object} filters - Date filters (optional)
+   * @param {number} limit - Items per page (optional)
+   * @param {string} order - Ordering field (optional)
    */
-  const loadPersons = useCallback(async (url = null, filters = {}) => {
+  const loadPersons = useCallback(async (url = null, filters = {}, limit = pageSize, order = ordering) => {
     setLoading(true);
     setError(null);
     
     try {
-      const data = await listPersons(url, filters);
+      const data = await listPersons(url, filters, limit, order);
       setPersons(data.results);
       setPagination({
         count: data.count,
@@ -55,16 +61,12 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [pageSize, ordering]);
 
   useEffect(() => {
     loadPersons();
   }, [loadPersons]);
 
-
-  /**
-   * Displays a temporary success message.
-   */
   const showSuccess = (message) => {
     setSuccessMessage(message);
     setTimeout(() => setSuccessMessage(null), 3000);
@@ -128,47 +130,36 @@ function App() {
     setEditingPerson(person);
   };
 
-  /**
-   * Handler to cancel editing.
-   */
   const handleCancelEdit = () => {
     setEditingPerson(null);
   };
 
-  /**
-   * Handler to apply date filters.
-   */
-  const handleFilter = (filters) => {
+  const handleFilter = useCallback((filters) => {
     setActiveFilters(filters);
-    loadPersons(null, filters);
+    loadPersons(null, filters, pageSize, ordering);
+  }, [loadPersons, pageSize, ordering]);
+
+  const handlePageSizeChange = (newSize) => {
+    setPageSize(newSize);
+    loadPersons(null, activeFilters, newSize, ordering);
   };
 
-  /**
-   * Handler to clear filters.
-   */
-  const handleClearFilter = () => {
-    setActiveFilters({});
-    loadPersons();
+  const handleOrderingChange = (newOrdering) => {
+    setOrdering(newOrdering);
+    loadPersons(null, activeFilters, pageSize, newOrdering);
   };
 
-  /**
-   * Navigates to the next page.
-   */
   const handleNextPage = () => {
     if (pagination.next) {
       loadPersons(pagination.next);
     }
   };
 
-  /**
-   * Navigates to the previous page.
-   */
   const handlePreviousPage = () => {
     if (pagination.previous) {
       loadPersons(pagination.previous);
     }
   };
-
 
   return (
     <div className="container mt-4">
@@ -208,9 +199,8 @@ function App() {
         onCancel={handleCancelEdit}
       />
 
-      <DateFilter
+      <SearchFilters
         onFilter={handleFilter}
-        onClear={handleClearFilter}
         loading={loading}
       />
 
@@ -220,9 +210,11 @@ function App() {
         onEdit={handleEditPerson}
         onDelete={handleDeletePerson}
         editingPersonId={editingPerson?.id}
+        ordering={ordering}
+        onOrderingChange={handleOrderingChange}
       />
 
-      <div className="pagination-controls d-flex justify-content-between">
+      <div className="pagination-controls d-flex justify-content-between align-items-center">
         <button
           className="btn btn-secondary"
           onClick={handlePreviousPage}
@@ -230,10 +222,30 @@ function App() {
         >
           Prev
         </button>
-        <span className="align-self-center text-muted">
-          {pagination.count} person(s) found
-          {Object.keys(activeFilters).length > 0 && ' (filtered)'}
-        </span>
+        
+        <div className="d-flex align-items-center gap-3">
+          <div className="d-flex align-items-center gap-2">
+            <label htmlFor="pageSize" className="text-muted small mb-0">Items per page:</label>
+            <select
+              id="pageSize"
+              className="form-select form-select-sm"
+              style={{ width: 'auto' }}
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              disabled={loading}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+          <span className="text-muted small">
+            {pagination.count} person(s)
+            {Object.keys(activeFilters).length > 0 && ' (filtered)'}
+          </span>
+        </div>
+        
         <button
           className="btn btn-secondary"
           onClick={handleNextPage}

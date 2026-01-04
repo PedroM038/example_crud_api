@@ -1,7 +1,7 @@
 /**
- * LongTaskPanel.js - Panel to manage async tasks
+ * @file LongTaskPanel.js - panel to manage async tasks
  * 
- * Allows starting long-running tasks and monitoring their status
+ * @description allows starting long-running tasks and monitoring their status
  * through API polling.
  */
 import React, { useState, useEffect, useRef } from 'react';
@@ -17,9 +17,8 @@ function LongTaskPanel() {
 
   const pollingRef = useRef(null);
 
-  /**
-   * Starts a new async task.
-   */
+  
+   //starts a new async task.
   const handleStartTask = async () => {
     setError(null);
     setLoading(true);
@@ -38,9 +37,7 @@ function LongTaskPanel() {
     }
   };
 
-  /**
-   * Starts polling to check task status.
-   */
+  //starts polling to check task status.
   const startPolling = (id) => {
     if (pollingRef.current) {
       clearInterval(pollingRef.current);
@@ -70,9 +67,7 @@ function LongTaskPanel() {
     };
   }, []);
 
-  /**
-   * Returns CSS class based on task state.
-   */
+  //returns CSS class based on task state.
   const getStatusClass = () => {
     switch (taskState) {
       case 'PENDING':
